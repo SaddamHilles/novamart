@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { apiErrorMessage } from '../api';
 import SocialAuth from '../components/SocialAuth';
 import { useAuth } from '../context/AuthContext';
+import { btnPrimary, eyebrow, field, label, paddedCard } from '../ui';
 
 export default function Login() {
   const { login } = useAuth();
@@ -23,25 +24,29 @@ export default function Login() {
   }
 
   return (
-    <form className="form auth-form" onSubmit={submit}>
-      <p className="eyebrow">Welcome back</p>
+    <form className={`${paddedCard} mx-auto mt-12 grid w-[min(460px,100%)] gap-3`} onSubmit={submit}>
+      <p className={eyebrow}>Welcome back</p>
       <h2>Sign in</h2>
-      <label>
+      <label className={label}>
         Email
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <input className={field} type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
       </label>
-      <label>
+      <label className={label}>
         Password
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <input
+          className={field}
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
       </label>
-      {error && <p className="err">{error}</p>}
-      <button className="btn primary" type="submit">
+      {error && <p className="text-err">{error}</p>}
+      <button className={btnPrimary} type="submit">
         Continue
       </button>
       <SocialAuth />
-      <p className="hint">
-        Demo account is prefilled. Admin: admin@novamart.dev / Admin123!
-      </p>
+      <p className="text-muted">Demo account is prefilled. Admin: admin@novamart.dev / Admin123!</p>
       <p>
         New here? <Link to="/register">Create an account</Link>
       </p>

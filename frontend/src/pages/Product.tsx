@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import StarRating from '../components/StarRating';
 import type { Product as ProductType } from '../types';
+import { btnPrimary, eyebrow, field, paddedCard, pageStatus } from '../ui';
 
 export default function Product() {
   const { id } = useParams();
@@ -23,7 +24,7 @@ export default function Product() {
     api.get<ProductType>(`/products/${id}`).then(({ data }) => setProduct(data));
   }, [id]);
 
-  if (!product) return <div className="page-status">Loading product…</div>;
+  if (!product) return <div className={pageStatus}>Loading product…</div>;
 
   async function addToBag() {
     if (!user) {
@@ -54,58 +55,65 @@ export default function Product() {
   }
 
   return (
-    <section className="product-page">
-      <div className="product-hero">
-        <img src={product.image} alt={product.name} />
-        <div>
-          <p className="eyebrow">
+    <section className="pt-8">
+      <div className="flex flex-col gap-6 md:flex-row">
+        <img
+          className="h-[280px] w-full flex-1 rounded-[28px] object-cover md:h-[460px]"
+          src={product.image}
+          alt={product.name}
+        />
+        <div className="flex-1">
+          <p className={eyebrow}>
             {product.brand} · {product.category}
           </p>
-          <h1>{product.name}</h1>
-          <p className="lead">{product.description}</p>
-          <p className="price">${product.price}</p>
-          <p className="stock">
+          <h1 className="my-2.5 mb-4 font-serif text-[clamp(2.4rem,6vw,4.4rem)] leading-[1.05]">
+            {product.name}
+          </h1>
+          <p className="max-w-[34rem] text-[1.05rem] leading-[1.7] text-muted">{product.description}</p>
+          <p className="my-2 font-serif text-[2rem]">${product.price}</p>
+          <p className="text-muted">
             {product.rating.toFixed(1)} ★ · {product.numReviews} reviews · {product.countInStock} in
             stock
           </p>
-          <div className="buy-row">
-            <select value={qty} onChange={(e) => setQty(Number(e.target.value))}>
+          <div className="mt-4 flex items-center gap-4">
+            <select className={`${field} w-auto`} value={qty} onChange={(e) => setQty(Number(e.target.value))}>
               {Array.from({ length: Math.min(product.countInStock, 8) }, (_, i) => i + 1).map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
               ))}
             </select>
-            <button type="button" className="btn primary" onClick={addToBag} disabled={!product.countInStock}>
+            <button type="button" className={btnPrimary} onClick={addToBag} disabled={!product.countInStock}>
               {product.countInStock ? 'Add to bag' : 'Sold out'}
             </button>
           </div>
-          {message && <p className="ok">{message}</p>}
-          {error && <p className="err">{error}</p>}
+          {message && <p className="text-ok">{message}</p>}
+          {error && <p className="text-err">{error}</p>}
         </div>
       </div>
 
-      <div className="reviews">
+      <div className="mt-9">
         <h2>Reviews</h2>
         {product.reviews.map((review) => (
-          <article key={review._id} className="review">
+          <article key={review._id} className={`${paddedCard} mb-3`}>
             <strong>{review.name}</strong>
             <StarRating value={review.rating} />
             <p>{review.comment}</p>
           </article>
         ))}
         {user ? (
-          <form className="review-form" onSubmit={submitReview}>
+          <form className="mt-[18px] grid gap-2.5" onSubmit={submitReview}>
             <h3>Write a review</h3>
             <StarRating value={rating} onChange={setRating} label="Your rating" />
             <textarea
+              className={field}
               required
               rows={3}
               placeholder="How has it held up?"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
             />
-            <button className="btn primary" type="submit">
+            <button className={btnPrimary} type="submit">
               Publish
             </button>
           </form>

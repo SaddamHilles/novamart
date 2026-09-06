@@ -15,16 +15,17 @@ import OrderDetail from './pages/OrderDetail';
 import Admin from './pages/Admin';
 import OAuthCallback from './pages/OAuthCallback';
 import Profile from './pages/Profile';
+import { pageStatus } from './ui';
 
 function PrivateRoute({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
-  if (loading) return <div className="page-status">Loading your account…</div>;
+  if (loading) return <div className={pageStatus}>Loading your account…</div>;
   return user ? children : <Navigate to="/login" replace />;
 }
 
 function AdminRoute({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
-  if (loading) return <div className="page-status">Loading…</div>;
+  if (loading) return <div className={pageStatus}>Loading…</div>;
   if (!user) return <Navigate to="/login" replace />;
   if (!user.isAdmin) return <Navigate to="/" replace />;
   return children;
@@ -32,9 +33,9 @@ function AdminRoute({ children }: { children: ReactNode }) {
 
 export default function App() {
   return (
-    <div className="app-shell">
+    <div className="flex min-h-screen flex-col">
       <Navbar />
-      <main>
+      <main className="mx-auto w-[min(1120px,calc(100%-32px))] flex-1 pb-16">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />

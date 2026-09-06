@@ -1,28 +1,39 @@
+import { cn } from '../ui';
+
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 function startOAuth(provider: 'google' | 'facebook' | 'github') {
   window.location.href = `${apiUrl}/api/auth/${provider}`;
 }
 
+const socialBtn =
+  'flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-full border border-line bg-white px-4 py-2.5 text-ink hover:border-ink';
+
 export default function SocialAuth() {
   return (
-    <div className="social-auth">
-      <div className="auth-or" role="separator" aria-label="or">
+    <div className="grid gap-2.5">
+      <div className="flex items-center gap-3 text-[0.78rem] tracking-[0.18em] text-muted" role="separator" aria-label="or">
+        <span className="h-px flex-1 bg-line" />
         <span>OR</span>
+        <span className="h-px flex-1 bg-line" />
       </div>
-      <button type="button" className="social-btn google" onClick={() => startOAuth('google')}>
+      <button type="button" className={socialBtn} onClick={() => startOAuth('google')}>
         <GoogleIcon />
         Continue with Google
       </button>
-      <button type="button" className="social-btn facebook" onClick={() => startOAuth('facebook')}>
+      <button type="button" className={socialBtn} onClick={() => startOAuth('facebook')}>
         <FacebookIcon />
         Continue with Facebook
       </button>
-      <button type="button" className="social-btn github" onClick={() => startOAuth('github')}>
+      <button
+        type="button"
+        className={cn(socialBtn, 'border-ink bg-ink text-paper hover:border-ink')}
+        onClick={() => startOAuth('github')}
+      >
         <GitHubIcon />
         Continue with GitHub
       </button>
-      <p className="hint">
+      <p className="text-muted">
         Google redirect URI must be exactly
         <br />
         <code>http://localhost:5000/api/auth/google/callback</code>

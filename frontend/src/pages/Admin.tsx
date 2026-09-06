@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import api from '../api';
 import type { CatalogResponse, Product, ProductForm } from '../types';
+import { btnPrimary, field, label, paddedCard } from '../ui';
 
 const blank: ProductForm = {
   name: '',
@@ -41,47 +42,51 @@ export default function Admin() {
   }
 
   return (
-    <section className="cart-layout">
-      <form className="form" onSubmit={createProduct}>
+    <section className="flex flex-col items-start gap-6 pt-8 md:flex-row">
+      <form className={`${paddedCard} grid flex-1 gap-3`} onSubmit={createProduct}>
         <h2>Add a product</h2>
-        {textFields.map((field) => (
-          <label key={field}>
-            {field}
-            {field === 'description' ? (
+        {textFields.map((name) => (
+          <label key={name} className={label}>
+            {name}
+            {name === 'description' ? (
               <textarea
+                className={field}
                 rows={3}
-                value={form[field]}
-                onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+                value={form[name]}
+                onChange={(e) => setForm({ ...form, [name]: e.target.value })}
                 required
               />
             ) : (
               <input
-                value={form[field]}
-                onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+                className={field}
+                value={form[name]}
+                onChange={(e) => setForm({ ...form, [name]: e.target.value })}
                 required
               />
             )}
           </label>
         ))}
-        <label>
+        <label className={label}>
           Price
           <input
+            className={field}
             type="number"
             min={1}
             value={form.price}
             onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
           />
         </label>
-        <label>
+        <label className={label}>
           Stock
           <input
+            className={field}
             type="number"
             min={0}
             value={form.countInStock}
             onChange={(e) => setForm({ ...form, countInStock: Number(e.target.value) })}
           />
         </label>
-        <label className="check">
+        <label className="flex items-center gap-2">
           <input
             type="checkbox"
             checked={form.featured}
@@ -89,22 +94,22 @@ export default function Admin() {
           />
           Featured on home
         </label>
-        {message && <p className="ok">{message}</p>}
-        <button className="btn primary" type="submit">
+        {message && <p className="text-ok">{message}</p>}
+        <button className={btnPrimary} type="submit">
           Save product
         </button>
       </form>
-      <div>
+      <div className="flex-1">
         <h3>Inventory</h3>
         {products.map((product) => (
-          <article key={product._id} className="order-row">
+          <article key={product._id} className={`${paddedCard} mb-2.5 flex items-center justify-between gap-3`}>
             <div>
               <strong>{product.name}</strong>
               <p>
                 ${product.price} · {product.countInStock} left
               </p>
             </div>
-            <button type="button" className="text-btn" onClick={() => remove(product._id)}>
+            <button type="button" className="cursor-pointer border-0 bg-transparent" onClick={() => remove(product._id)}>
               Delete
             </button>
           </article>

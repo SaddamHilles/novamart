@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api, { apiErrorMessage } from '../api';
 import { useCart } from '../context/CartContext';
 import type { Order, PaymentMethod, ShippingAddress } from '../types';
+import { btnPrimary, field, label, paddedCard } from '../ui';
 
 const empty: ShippingAddress = { address: '', city: '', postalCode: '', country: '' };
 const fields: Array<keyof ShippingAddress> = ['address', 'city', 'postalCode', 'country'];
@@ -30,22 +31,24 @@ export default function Checkout() {
   }
 
   return (
-    <section className="cart-layout">
-      <form className="form" onSubmit={placeOrder}>
+    <section className="flex flex-col items-start gap-6 pt-8 md:flex-row">
+      <form className={`${paddedCard} grid flex-1 gap-3`} onSubmit={placeOrder}>
         <h2>Checkout</h2>
-        {fields.map((field) => (
-          <label key={field}>
-            {field === 'postalCode' ? 'Postal code' : field[0].toUpperCase() + field.slice(1)}
+        {fields.map((name) => (
+          <label key={name} className={label}>
+            {name === 'postalCode' ? 'Postal code' : name[0].toUpperCase() + name.slice(1)}
             <input
+              className={field}
               required
-              value={shipping[field]}
-              onChange={(e) => setShipping({ ...shipping, [field]: e.target.value })}
+              value={shipping[name]}
+              onChange={(e) => setShipping({ ...shipping, [name]: e.target.value })}
             />
           </label>
         ))}
-        <label>
+        <label className={label}>
           Payment
           <select
+            className={field}
             value={paymentMethod}
             onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
           >
@@ -53,22 +56,22 @@ export default function Checkout() {
             <option>Cash on Delivery</option>
           </select>
         </label>
-        {error && <p className="err">{error}</p>}
-        <button className="btn primary" type="submit" disabled={!cart.length}>
+        {error && <p className="text-err">{error}</p>}
+        <button className={btnPrimary} type="submit" disabled={!cart.length}>
           Place order · ${total}
         </button>
       </form>
-      <aside className="summary">
+      <aside className={`${paddedCard} sticky top-[148px] flex-1`}>
         <h3>{cart.length} items</h3>
         {cart.map((item) => (
-          <p key={item.product}>
+          <p key={item.product} className="flex items-center justify-between gap-3">
             <span>
               {item.name} × {item.qty}
             </span>
             <span>${(item.price * item.qty).toFixed(2)}</span>
           </p>
         ))}
-        <p className="total">
+        <p className="flex items-center justify-between gap-3 text-[1.15rem] font-bold">
           <span>Total</span>
           <span>${total}</span>
         </p>

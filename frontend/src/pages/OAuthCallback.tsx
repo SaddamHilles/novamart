@@ -20,7 +20,7 @@ export default function OAuthCallback() {
   }, [completeOAuth, navigate, params]);
 
   return (
-    <section className="section narrow">
+    <section className="pt-8">
       <h2>{error || 'Finishing sign-in…'}</h2>
     </section>
   );

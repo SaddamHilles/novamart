@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api';
 import type { Order } from '../types';
+import { eyebrow, paddedCard, pageStatus } from '../ui';
 
 export default function OrderDetail() {
   const { id } = useParams();
@@ -12,11 +13,11 @@ export default function OrderDetail() {
     api.get<Order>(`/orders/${id}`).then(({ data }) => setOrder(data));
   }, [id]);
 
-  if (!order) return <div className="page-status">Loading order…</div>;
+  if (!order) return <div className={pageStatus}>Loading order…</div>;
 
   return (
-    <section className="section narrow">
-      <p className="eyebrow">Order #{order._id.slice(-6)}</p>
+    <section className="pt-8">
+      <p className={eyebrow}>Order #{order._id.slice(-6)}</p>
       <h2>{order.status}</h2>
       <p>
         {order.isPaid && order.paidAt
@@ -24,12 +25,12 @@ export default function OrderDetail() {
           : 'Payment pending'}{' '}
         · {order.paymentMethod}
       </p>
-      <div className="order-items">
+      <div>
         {order.orderItems.map((item) => (
-          <article key={item.product} className="cart-item">
-            <img src={item.image} alt={item.name} />
+          <article key={item.product} className={`${paddedCard} mb-3 grid grid-cols-[120px_1fr] gap-4`}>
+            <img className="h-[120px] w-full rounded-2xl object-cover" src={item.image} alt={item.name} />
             <div>
-              <h3>{item.name}</h3>
+              <h3 className="my-1 mb-2.5">{item.name}</h3>
               <p>
                 {item.qty} × ${item.price}
               </p>
@@ -37,14 +38,14 @@ export default function OrderDetail() {
           </article>
         ))}
       </div>
-      <aside className="summary">
-        <p>
+      <aside className={`${paddedCard} sticky top-[148px] mt-4`}>
+        <p className="flex items-center justify-between gap-3">
           <span>Ship to</span>
           <span>
             {order.shippingAddress.address}, {order.shippingAddress.city}
           </span>
         </p>
-        <p className="total">
+        <p className="flex items-center justify-between gap-3 text-[1.15rem] font-bold">
           <span>Total</span>
           <span>${order.totalPrice.toFixed(2)}</span>
         </p>

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { apiErrorMessage } from '../api';
 import SocialAuth from '../components/SocialAuth';
 import { useAuth } from '../context/AuthContext';
+import { btnPrimary, eyebrow, field, label, paddedCard } from '../ui';
 
 export default function Register() {
   const { register } = useAuth();
@@ -23,20 +24,21 @@ export default function Register() {
   }
 
   return (
-    <form className="form auth-form" onSubmit={submit}>
-      <p className="eyebrow">Join NovaMart</p>
+    <form className={`${paddedCard} mx-auto mt-12 grid w-[min(460px,100%)] gap-3`} onSubmit={submit}>
+      <p className={eyebrow}>Join NovaMart</p>
       <h2>Create an account</h2>
-      <label>
+      <label className={label}>
         Name
-        <input value={name} onChange={(e) => setName(e.target.value)} required />
+        <input className={field} value={name} onChange={(e) => setName(e.target.value)} required />
       </label>
-      <label>
+      <label className={label}>
         Email
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <input className={field} type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
       </label>
-      <label>
+      <label className={label}>
         Password
         <input
+          className={field}
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -44,8 +46,8 @@ export default function Register() {
           minLength={6}
         />
       </label>
-      {error && <p className="err">{error}</p>}
-      <button className="btn primary" type="submit">
+      {error && <p className="text-err">{error}</p>}
+      <button className={btnPrimary} type="submit">
         Create account
       </button>
       <SocialAuth />

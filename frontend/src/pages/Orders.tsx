@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
 import type { Order } from '../types';
+import { paddedCard, pageStatus } from '../ui';
 
 export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -11,12 +12,16 @@ export default function Orders() {
   }, []);
 
   return (
-    <section className="section">
+    <section className="pt-7">
       <h2>Your orders</h2>
-      {!orders.length && <p className="page-status">No orders yet.</p>}
-      <div className="order-list">
+      {!orders.length && <p className={pageStatus}>No orders yet.</p>}
+      <div className="grid gap-2.5">
         {orders.map((order) => (
-          <Link key={order._id} to={`/orders/${order._id}`} className="order-row">
+          <Link
+            key={order._id}
+            to={`/orders/${order._id}`}
+            className={`${paddedCard} flex items-center justify-between gap-3`}
+          >
             <div>
               <strong>#{order._id.slice(-6)}</strong>
               <p>{new Date(order.createdAt).toLocaleDateString()}</p>
