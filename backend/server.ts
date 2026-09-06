@@ -12,12 +12,20 @@ import cartRoutes from './routes/cart';
 import orderRoutes from './routes/orders';
 import { notFound, errorHandler } from './middleware/error';
 import { seedDatabase } from './data/seedDatabase';
+import { clientOrigins } from './config/oauth';
 
 const app = express();
+const allowedOrigins = clientOrigins();
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(null, false);
+    },
     credentials: true,
   })
 );
@@ -52,8 +60,9 @@ const port = Number(process.env.PORT) || 5000;
 connectDB(process.env.MONGO_URI)
   .then(async () => {
     await seedDatabase();
-    app.listen(port, () => {
+    app.listen(port, '0.0.0.0', () => {
       console.log(`API running on http://localhost:${port}`);
+      console.log(`LAN API: http://192.168.100.2:${port}`);
     });
   })
   .catch((err: unknown) => {

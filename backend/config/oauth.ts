@@ -59,8 +59,25 @@ export async function upsertOAuthUser(profile: OAuthProfile) {
   });
 }
 
+export function clientOrigins() {
+  const fromEnv = (process.env.CLIENT_URL || '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+  return [
+    ...new Set([
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'http://192.168.100.2:5173',
+      ...fromEnv,
+    ]),
+  ];
+}
+
 export function clientUrl() {
-  return process.env.CLIENT_URL || 'http://localhost:5173';
+  const first = (process.env.CLIENT_URL || '').split(',')[0]?.trim();
+  return first || 'http://localhost:5173';
 }
 
 export function apiUrl() {
